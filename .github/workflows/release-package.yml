@@ -1,8 +1,9 @@
 name: monitoring-ws-relay
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   push_to_registry:
