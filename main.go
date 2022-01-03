@@ -8,9 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/joho/godotenv"
-
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 )
 
 var SECRET string
@@ -21,7 +20,6 @@ type connection struct {
 }
 
 var connections []connection
-
 var upgrader = websocket.Upgrader{
 	HandshakeTimeout: 0,
 	ReadBufferSize:   1024,
@@ -47,7 +45,6 @@ var upgrader = websocket.Upgrader{
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Use /ws route to subscribe my websockets")
 }
-
 func reader(conn *websocket.Conn) {
 	if conn != nil {
 		for {
@@ -56,9 +53,7 @@ func reader(conn *websocket.Conn) {
 				log.Println(err)
 				return
 			}
-
 			log.Println((string(p)))
-
 			for _, elem := range connections {
 				if elem.connType == "listener" {
 					if err := elem.conn.WriteMessage(messageType, p); err != nil {
@@ -67,11 +62,9 @@ func reader(conn *websocket.Conn) {
 					}
 				}
 			}
-
 		}
 	}
 }
-
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	connType := r.URL.Query().Get("t")
 	ws, err := upgrader.Upgrade(w, r, nil)
@@ -83,7 +76,6 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 		reader(ws)
 	}
 }
-
 func setupRoutes() {
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/ws", wsEndpoint)
@@ -102,5 +94,6 @@ func main() {
 	SECRET = os.Getenv("SECRET")
 	fmt.Println("Go WebSockets")
 	setupRoutes()
-	log.Fatal(http.ListenAndServe(":80", nil))
+	go log.Fatal(http.ListenAndServe(":80", nil))
+	log.Fatal(http.ListenAndServeTLS(":443", "/etc/letsencrypt/live/modularizar.com/fullchain.pem", "/etc/letsencrypt/live/modularizar.com/privkey.pem", nil))
 }
