@@ -94,6 +94,8 @@ func main() {
 	SECRET = os.Getenv("SECRET")
 	fmt.Println("Go WebSockets")
 	setupRoutes()
-	go log.Fatal(http.ListenAndServe(":80", nil))
+	go func() {
+		log.Fatal(http.ListenAndServe(":80", nil))
+	}()
 	log.Fatal(http.ListenAndServeTLS(":443", "/etc/letsencrypt/live/modularizar.com/fullchain.pem", "/etc/letsencrypt/live/modularizar.com/privkey.pem", nil))
 }
