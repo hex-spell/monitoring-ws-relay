@@ -59,6 +59,7 @@ func reader(conn *websocket.Conn) {
 				if elem.connType == "listener" {
 					if err := elem.conn.WriteMessage(messageType, p); err != nil {
 						log.Println(err)
+						return
 					}
 				}
 			}
