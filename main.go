@@ -88,6 +88,7 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	ws.SetCloseHandler(func(code int, text string) error {
 		fmt.Println(text)
+		fmt.Println("closed!")
 		indexOfConnection := indexOfConn(conn, connections)
 		connections = removeConn(connections, indexOfConnection)
 		var returned error
